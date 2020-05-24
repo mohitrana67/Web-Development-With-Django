@@ -1,0 +1,63 @@
+{% extends 'dispatching/base.html' %}
+
+{% block title %}
+    Hello Dispatcher
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <center>Hello Dispatcher</center>
+        </div>
+    </div>
+    <form action="{% url 'dispatching_addTrip' %}" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" id="tripNo" placeholder="Trip No." name="tripNo">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="startDate" placeholder="Start Date" name="startDate">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="tripNo" id="endDate" placeholder="End Date" name="endDate">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" id="firstDriverName" name="firstDriverName" placeholder="First Driver">
+            </div>
+            <div class="col">
+                <center>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="materialUnchecked" name="materialExampleRadios">
+                        <label class="form-check-label" for="materialUnchecked">Material unchecked</label>
+                    </div>
+                </center>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="secondDriverName" name="secondDriverName" placeholder="Second Driver">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <center>
+                    <button type="submit" class="btn btn-primary">Add Trip</button>
+                </center>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <span>
+                    {{ message }}
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block javascript %}
+{% endblock %}

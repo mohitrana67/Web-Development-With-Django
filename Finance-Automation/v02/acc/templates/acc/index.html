@@ -1,0 +1,88 @@
+{% extends 'acc/base.html' %}
+
+{% block customcss %}
+    {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'acc/css/index.css' %}">
+{% endblock %}
+
+{% block title %}
+    Welcome {{ userId }}
+{% endblock %}
+
+{% block content %}
+    <center><h1>Hello {{ userId }}</h1></center>
+    <div class="toggle">
+        <form action="{% url 'acc_uploadFile' %}", method="POST", enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file", name="uploadedFile">
+            <input type="submit" name="upload" id="upload">
+        </form>
+    </div>
+    <div class="custom-table">
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                {% for header in csv_header %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+                <th>Expense/RevenueType</th>
+                <th>GST</th>
+                <th>QST</th>
+                <th>HST</th>
+                <th>Finalize</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for data_row in csv_data %}
+                    <form id = "add-data-form">
+                        {% csrf_token %}
+                        <tr>
+                            {% for data in data_row %}
+                                <td>{{ data }}</td>
+                            {% endfor %}
+                            <td>
+                                <select id="inputState" class="form-control">
+                                    <option value="revenue">Sales From Load adn Misclleneous Sales</option>
+                                    <option value="friend-loan">Friend Loan</option>
+                                    <option value="owner-contr">Owner Contribution</option>
+                                    <option value="truck-trailer-reapair">Truck Trailer Repair</option>
+                                    <option value="truck-trailer-lease">Truck Trailer Lease</option>
+                                    <option value="truck-trailer-insurance">Truck Trailer Insurance</option>
+                                    <option value="office-expenses">Office Expense</option>
+                                    <option value="vendor-payment">Vendor Payment</option>
+                                    <option value="payroll">Payroll</option>
+                                    <option value="pd7">PD7 Taxes</option>
+                                    <option value="toll-tax">Toll Taxes</option>
+                                    <option value="traffic-tickets">Trafic Tickets</option>
+                                    <option value="firend-loan-payback">Firend Loan Payback</option>
+                                    <option value="banking-fee">Banking Fees</option>
+                                    <option value="owner-payment">Owner Payment</option>
+                                    <option value="authorities">Authorities</option>
+                                </select>
+                            </td>
+                            {% if data_row.5 >= 0 %}
+                                <td><input type="text" value="0" disabled id='GST'></td>
+                                <td><input type="text" value="0" disabled id='GST'></td>
+                                <td><input type="text" value="0" disabled id='GST'></td>
+                            {% elif data_row.6 >= 0 %}
+                                <td><input type="text" value="0" disabled id='GST'></td>
+                                <td><input type="text" value="0" disabled id='GST'></td>
+                                <td><input type="text" value="0" disabled id='GST'></td>
+                            {% else %}
+                                <td><input type="text" placeholder="GST" id='GST-'</td>
+                                <td><input type="text" placeholder="PST" id='GST'></td>
+                                <td><input type="text" placeholder="PVT" id='GST'></td>
+                            {% endif %}
+                            <td><input type="submit" name="enter-data" id="enter-data"></td>
+                        </tr>
+                    </form>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block customjavascript %}
+    {% load static %}
+    <script src="{% static 'acc/js/index.js' %}"></script>
+    <script src="{% static 'acc/js/jquery.js' %}"></script>
+{% endblock %}

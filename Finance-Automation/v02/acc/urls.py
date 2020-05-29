@@ -12,4 +12,6 @@ urlpatterns = [
     # ex: accounting/uploadFile
     path('uploadFile', views.uploadFile, name='acc_uploadFile'),
 
+    #ajax call handler to insert data into the databse
+    path('uploadFile/addData', views.addData, name='acc_addData')
 ]

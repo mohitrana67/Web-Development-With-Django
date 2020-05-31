@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md col-12">
+            <center><h1>Welcome Accountant</h1></center>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mx-auto col-10">
+            <form class="form">
+                <div class="mb-3">
+                    <input type="text" name="expense-name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense-amount" class="form-control">
+                </div>
+                <center><button class="btn btn-primary">Add Expense</button></center>
+            </form>
+        </div>
+    </div>
+
+<script>
+
+    const xhr = new XMLHttpRequest()
+    const method = 'GET'
+
+    const url = ''
+
+</script>
+
+{% endblock content %}

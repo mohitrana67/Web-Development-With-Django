@@ -56,7 +56,7 @@ ROOT_URLCONF = 'tcmf.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # we are adding templates directory to the base dir and than attaching it to the settings so that it will render templates wherenver called
+        # we are adding templates directory to the base dir and than attaching it to the settings so that it will render templates wherenver calledßßßß
         'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {

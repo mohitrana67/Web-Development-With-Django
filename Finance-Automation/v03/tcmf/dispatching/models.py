@@ -9,3 +9,4 @@ class Trip(models.Model):
 
     def __str__(self):
         return(f'Trip has been recoded as {self.trip_no} from {self.origin_city} to {self.destination_city}')
+

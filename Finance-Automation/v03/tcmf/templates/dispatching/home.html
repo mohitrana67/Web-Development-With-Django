@@ -1,37 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Hello</h1>
+    <div class="row">
+        <div class="col-md-4 mx-auto col-12"><h1>Hello Dispatcher</h1></div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4 mx-auto col-10">
+            <form class="form" method="POST" action="../trip/add">
+                {% csrf_token %}
+                <input type="hidden" value="/dispatching/home/1" name="next">
+                <div class="mb-3"><input type="text" placeholder="Trip No" name="trip_no" id="trip_no" class="form-control"></div>
+                <div class="mb-3"><input type="text" placeholder="Origin City" name="origin_city" id="origin_city" class="form-control"></div>
+                <div class="mb-3"><input type="text" placeholder="Destination City" name="destination_city" id="destination_city" class="form-control"></div>
+                <div class="mb-3"><button type="submit" class="btn btn-primary">Add Trip</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row" id="trip">
+        
+    </div>
 
     <script>
-        <!-- first of all we need to create an object for the XMLHttpRequest. -->
+        var tripsElement = document.getElementById("trip")
+
         const xhr = new XMLHttpRequest();
-
-        <!-- we have to define the method we gonna use -->
         const method = 'GET'
-
-        <!-- Be aware that we are in dispaftching/home and we need to render dispatching/trips so we need to go one trr level down -->
-        <!-- We have to define the url we are targetting to get data from
-        -->
+        //  Be aware that we are in dispatching/home and we need to render dispatching/trips so we need to go one trr level down -->
+        //  We have to define the url we are targetting to get data from-->
         const url = '../trips'
-
-        <!-- Define the response type you are expecting -->
         const responseType = "json"
-
-        <!-- now we have to make sure the response type we are getting from the requets is what we are processing -->
         xhr.responseType = responseType
-
-        <!-- Open the request -->
         xhr.open(method, url)
-
-        <!-- define what you want to do with the request -->
         xhr.onload = function() {
-            console.log(xhr.response)
-            var serverResponse = xhr.response
-            var listedItems = serverResponse.response
+            //  console.log(xhr.response)
+            const serverResponse = xhr.response
+            const listedItems = serverResponse.response
+            
+            var listedTripsList = ""
+            var i;
+            for (i=0;i<listedItems.length;i++){
+                console.log(i)
+                console.log(listedItems[i])
+                var currentItem = listedItems[i].origin_city
+                listedTripsList += "<div class='col-md-10 mx-auto col-10' id='trip-data'> Trip "+ listedItems[i].trip_no +" is going form "+ listedItems[i].origin_city +" to "+ listedItems[i].destination_city +"</div>"
+            }
+            tripsElement.innerHTML = listedTripsList
         }
-
-        <!-- sending the request -->
         xhr.send()
     </script>
 {% endblock content %}

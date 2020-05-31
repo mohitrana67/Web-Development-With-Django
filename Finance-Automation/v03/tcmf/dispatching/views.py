@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect   
 from django.http import HttpResponse, Http404, JsonResponse
 
 from .models import *
 
+from .forms import *
+
 # Create your views here.
-def home_view(request,*args, **kwargs):
+def trip_home_view(request,*args, **kwargs):
     # return HttpResponse(f"Hello") 
     return render(
         request = request,
@@ -54,3 +56,25 @@ def trips_list(request,*args,**kwargs):
         data["response"] = "We dont have any trips at the moment"
     
     return JsonResponse(data)
+
+# view to creat new trip
+def create_trip(request,*args,**kwargs):
+    form = AddTripForm(request.POST or None)
+    
+    next_url = request.POST.get("next") or None
+
+    # we are checking if we are getting any data in the form already
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.save()
+        if next_url != None:
+            return redirect(next_url)
+        # form = AddTripForm()
+        
+        # we can print in terminal using this
+        print(f"next_url is {next_url}")
+    return render(
+        request = request,
+        template_name = "components/form.html",
+        context = {"form":form}
+    )

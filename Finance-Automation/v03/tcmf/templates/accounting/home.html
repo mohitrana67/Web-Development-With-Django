@@ -8,25 +8,97 @@
     </div>
     <div class="row">
         <div class="col-md-4 mx-auto col-10">
-            <form class="form">
+            <form class="form" action="../add_expense" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="/accounting/home/1">
                 <div class="mb-3">
-                    <input type="text" name="expense-name" class="form-control">
+                    <input type="text" name="expense_account_type" class="form-control" placeholder="Please enter the expense Type">
                 </div>
                 <div class="mb-3">
-                    <input type="text" name="expense-amount" class="form-control">
+                    <input type="text" name="expense_transaction_date" class="form-control" placeholder="Please Enter the expense Date">
                 </div>
-                <center><button class="btn btn-primary">Add Expense</button></center>
+                <div class="mb-3">
+                    <input type="text" name="expense-name" class="form-control" placeholder="Please enter the expense Name">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_description_1" class="form-control" placeholder="Please Enter the expense Description">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_description_2" class="form-control" placeholder="Please enter the expense Description">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_amount_cad" class="form-control" placeholder="Please Enter the expense Amount if CAA">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_amount_usd" class="form-control" placeholder="Please enter the expense Amount if USD">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_gst" class="form-control" placeholder="Please Enter the expense GST">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_pst" class="form-control" placeholder="Please enter the expense PST">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="expense_pvt" class="form-control" placeholder="Please Enter the expense PVT">
+                </div>
+                <center><button class="btn btn-primary mb-3">Add Expense</button></center>
             </form>
         </div>
     </div>
 
+    <div class="row" id="expense">
+        <div class="col">
+            <table class="table">
+                <thead>
+                  <tr id="expense_header_row">
+                    <th scope="col">expense_account_type</th>
+                    <th scope="col">expense_transaction_date</th>
+                    <th scope="col">expense_name</th>
+                    <th scope="col">expense_description_1</th>
+                    <th scope="col">expense_description_2</th>
+                    <th scope="col">expense_amount_cad</th>
+                    <th scope="col">expense_amount_usd</th>
+                    <th scope="col">expense_gst</th>
+                    <th scope="col">expense_pst</th>
+                    <th scope="col">expense_pvt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="expense_data_row">
+                      
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
 <script>
+    var expense_data_row = document.getElementById("expense_data_row")
 
     const xhr = new XMLHttpRequest()
     const method = 'GET'
 
-    const url = ''
+    const url = '../expense_list'
+    const responseType = "json"
+    xhr.responseType = responseType
 
+    console.log("We are opening xhr request here")
+    xhr.open(method, url)
+
+    xhr.onload = function(){
+        var response = xhr.response.response
+
+        var expense_list = ""
+        var i
+        for(i=0;i<response.length;i++){
+            current_expense = response[i]
+            // we have to decide what we will do with the data we get from the reponse
+            console.log(current_expense.id)
+            expense_list += "<td>"+current_expense.expense_account_type+"</td><td>"+current_expense.expense_transaction_date+"</td><td>"+current_expense.expense_name+"</td><td>"+current_expense.expense_description_1+"</td><td>"+current_expense.expense_description_2+"</td><td>"+current_expense.expense_amount_cad+"</td><td>"+current_expense.expense_amount_usd+"</td><td>"+current_expense.expense_gst+"</td><td>"+current_expense.expense_pst+"</td><td>"+current_expense.expense_pvt+"</td>"
+        }
+        expense_data_row .innerHTML = expense_list
+    }
+
+    xhr.send()
 </script>
 
 {% endblock content %}

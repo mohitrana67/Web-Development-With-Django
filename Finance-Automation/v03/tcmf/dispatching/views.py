@@ -51,7 +51,7 @@ def trips_list(request,*args,**kwargs):
     try:
         list = Trip.objects.all()
         trips_list=[{"id":x.id,"trip_no":x.trip_no,"origin_city":x.origin_city,"destination_city":x.destination_city} for x in list]
-        data["response"] = trips_list
+        data["response"] =  trips_list
     except:
         data["response"] = "We dont have any trips at the moment"
     
@@ -61,20 +61,24 @@ def trips_list(request,*args,**kwargs):
 def create_trip(request,*args,**kwargs):
     form = AddTripForm(request.POST or None)
     
-    next_url = request.POST.get("next") or None
+    # next_url = request.POST.get("next") or None
 
     # we are checking if we are getting any data in the form already
     if form.is_valid():
         obj = form.save(commit=False)
         obj.save()
-        if next_url != None:
-            return redirect(next_url)
-        # form = AddTripForm()
+        print(request.is_ajax())
+        if request.is_ajax():
+            return JsonResponse({}, status=201) # 201 is for created items
         
-        # we can print in terminal using this
-        print(f"next_url is {next_url}")
-    return render(
-        request = request,
-        template_name = "components/form.html",
-        context = {"form":form}
-    )
+        # if next_url != None:
+        #     return redirect(next_url)
+        # # form = AddTripForm()
+        
+        # # we can print in terminal using this
+        # print(f"next_url is {next_url}")
+    # return render(
+    #     request = request,
+    #     template_name = "components/form.html",
+    #     context = {"form":form}
+    # )

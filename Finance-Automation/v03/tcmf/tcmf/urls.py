@@ -26,6 +26,7 @@ urlpatterns = [
     path('dispatching/trips', trips_list, name="dispatching_trip_list"),
     path('dispatching/trip/add',create_trip, name="dispatching_create_trip"),
     path('accounting/home/<int:accontant_id>',accounting_home_view, name="accounting_home_view"),
-    path('accounting/expense_list',accounting_expense_list_view, name='accounting_expense_list_view')
+    path('accounting/expense_list',accounting_expense_list_view, name='accounting_expense_list_view'),
+    path('accounting/add_expense',accounting_add_expense, name='accounting_add_expense')
 ]
  

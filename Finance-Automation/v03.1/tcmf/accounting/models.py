@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+
 class Expense(models.Model):
     # id will be automatically genearted
     expense_account_type = models.CharField(max_length=100,blank=False, null=False)

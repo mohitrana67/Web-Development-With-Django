@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lskd-hqhyaas5wredp%0%40=sref%_2zro-v64+s#d4_n$1#u#'
+SECRET_KEY = '&5x3@t)g^p3w=e7y$gf-2)pm%880s%!wgr7i3h*@^wfwvy1grz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,8 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'dispatching.apps.DispatchingConfig',
-    'accounting.apps.AccountingConfig',
+    'accounting',
+    'dispatching',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,7 +56,8 @@ ROOT_URLCONF = 'tcmf.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # we are adding templates directory to the base dir and than attaching it to the settings so that it will render templates wherenver calledßßßß
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

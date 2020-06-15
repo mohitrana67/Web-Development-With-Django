@@ -1,4 +1,4 @@
-#!/Users/mohitrana/Desktop/Development/Web-Development-With-Django/Finance-Automation/finance-django/bin/python
+#!/Users/mohitrana/Desktop/Development/Web-Development-With-Django/Finance-Automation/finance-django/bin/python3.7
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -1,0 +1,19 @@
+{% extends 'users/base.html' %}
+
+{% block title %}
+Hello, Welcome to Trans Continental Motor Freight Inc.
+{% endblock %}
+
+{% block content %}
+<form action="create_user" method="post">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Please enter username">
+    <input type="password" name="password" placeholder="Please enter password">
+    <button type="submit" value="submit">Register</button>
+</form>
+{% endblock content %}
+
+{% block externalJS %}
+{% load static %}
+    <script src="{% static 'users/js/create_user.js' %}"></script>
+{% endblock %}

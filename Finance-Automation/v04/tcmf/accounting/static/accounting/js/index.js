@@ -173,9 +173,6 @@ function handleLoadCSVFormDidSubmit(event){
     xhr.send(addCSVData)
 }
 
-const add_csv_expense_data = document.getElementById("add-expenses-with-csv")
-// add_csv_expense_data.addEventListener("submit", handleCSVDataExpense)
-
 const add_epense_form = document.getElementById("add_expense_form")
 add_epense_form.addEventListener("submit", handleTripAddFormDidSubmit)
 

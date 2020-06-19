@@ -20,11 +20,14 @@ def add_accounting_expense(request,*args,**kwargs):
     """
     The main task of this view is to create an API for storing accouting expenses in the database.
     """
-    context = {}
-    error_message = ""
-    current_flag = "N"
+    context = {}    #we are creating a context dictonary to send as a response to the request
+    message = ""    #messages we will send
+    current_flag = "N"  #setting flag to see if all the values we are getting are correct
 
-    next_url = request.POST.get("next") or None
+    # next_url = request.POST.get("next") or None
+    """
+    Getting all the values we are getting from the post request
+    """
     expense_account_type = request.POST.get("expense_account_type")
     expense_transaction_date = request.POST.get("expense_transaction_date")
     expense_name = request.POST.get("expense_name")
@@ -222,8 +225,3 @@ def add_csv_data(request, *args, **kwargs):
     else:
         message = "File type is not csv"
         # return HttpResponse("You are not rendering a post")
-
-# API to store the data
-def add_csv_expense(request,*args,**kwargs):
-    value = request.POST.get('data')
-    return HttpResponse(value)

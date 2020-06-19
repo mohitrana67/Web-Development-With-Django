@@ -33,6 +33,8 @@ function load_trips(data_head){
 function handleTripAddFormDidSubmit(event){
     // console.log("You are in adding expense")
     event.preventDefault()
+
+    // alert(event)
             
     const addTripForm = event.target
     const addTripData = new FormData(addTripForm)
@@ -50,11 +52,13 @@ function handleTripAddFormDidSubmit(event){
     xhr.setRequestHeader("X-Requested-With","XMLHttpRequest")
     xhr.onload = function() {
         var serverResponse = xhr.response
-        console.log(serverResponse)
-        load_trips(data_head)
-        addTripForm.reset()
+        console.log(serverResponse.message)
+        addTripForm.style.display = "none"
+        // load_trips(data_head)
+        // addTripForm.reset()
     }
     xhr.send(addTripData)
+
 }
 
 // Function to add the expense csv data
@@ -77,26 +81,97 @@ function handleLoadCSVFormDidSubmit(event){
     const expense_data_row = document.getElementById("expense_data")
     xhr.onload = function() {
         var serverResponse = xhr.response
-        const lenOfDataArray = (serverResponse.response).length
-        var expense_list = ""
+        var lenOfDataArray = (serverResponse.response).length
+        var tbody = document.getElementById('expense_data')
+        // NOw we have to iterate over the response to get all the rows of the response
         for(var i=0; i<lenOfDataArray; i++){
-            expense_list += "<tr><td><input type='text' name='account_type' value='"+serverResponse.response[i][0]+"' disabled></td><td><input type='text' value='"+serverResponse.response[i][1]+"' disabled></td><td><input type = 'text'></td><td><input type='text' value='"+serverResponse.response[i][2]+"' disabled></td><td><input type='text' value='"+serverResponse.response[i][3]+"' disabled></td><td><input type='text' value='"+serverResponse.response[i][4]+"' disabled></td><td><input type='text' value='"+serverResponse.response[i][5]+"' disabled></td><td><input type = 'text'></td><td><input type = 'text'></td><td><input type = 'text'></td></tr>"
+            // Now we have to create a form for every row we get in response
+            var row = document.createElement('tr')
+            row.className="tr"+i
+            var csvExpenseForm = document.createElement('form')
+            csvExpenseForm.name = 'this is me'
+            csvExpenseForm.setAttribute('onsubmit','handleTripAddFormDidSubmit(event)')
+            csvExpenseForm.setAttribute('action','1/add_accouting_expense')
+            csvExpenseForm.setAttribute('method', 'POST')
+            // now we have to create the data rows and the input fields for the form
+            // we have total of 10 rows 6 from the data we received, 3 for gst pst and pvt and 1 for submit buttons
+            var csrf = document.querySelectorAll('input[name=csrfmiddlewaretoken]')[0].value
+            
+            var csrf_input = document.createElement('input')
+            csrf_input.setAttribute('name', 'csrfmiddlewaretoken')
+            csrf_input.setAttribute('value', csrf)
+            csrf_input.setAttribute('type', 'hidden')
+
+            csvExpenseForm.appendChild(csrf_input)
+
+            for(var j=0; j<11; j++){
+                // creating a table data for storing the input field
+                var tableData = document.createElement('td')
+
+                // creating the input for the table data
+                var inputField = document.createElement('input')
+                inputField.type = 'text'
+                if(j==0){
+                    inputField.name = 'expense_account_type'
+                    inputField.disabled = false
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==1){
+                    inputField.name = 'expense_transaction_date'
+                    inputField.disabled = false
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==2){
+                    inputField.name = 'expense_name'
+                    inputField.disabled = false
+                    inputField.placeholder='Please enter expense type'
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==3){
+                    inputField.name = 'expense_description_1'
+                    inputField.disabled = false
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==4){
+                    inputField.name = 'expense_description_2'
+                    inputField.disabled = false
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==5){
+                    inputField.name = 'expense_amount_cad'
+                    inputField.disabled = false
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==6){
+                    inputField.name = 'expense_amount_usd'
+                    inputField.disabled = false
+                    inputField.value = serverResponse.response[i][j]
+                }else if(j==7){
+                    inputField.name = 'expense_gst'
+                    inputField.placeholder = 'GST'
+                    inputField.disabled = false
+                }else if(j==8){
+                    inputField.name = 'expense_pst'
+                    inputField.placeholder = 'PST'
+                    inputField.disabled = false
+                }else if(j==9){
+                    inputField.name = 'expense_pvt'
+                    inputField.placeholder='PVT'
+                    inputField.disabled = false
+                }else{
+                    inputField.type='submit'
+                }
+
+                tableData.appendChild(inputField)
+                csvExpenseForm.appendChild(tableData)
+            }
+            
+            // appending form to the tr
+            row.appendChild(csvExpenseForm)
+            tbody.appendChild(row)
         }
         document.getElementById("add-individual-expense").style.display = "none"
-        console.log(expense_data_row.innerHTML)
+        // create the form <form> element
+
+        // document.getElementById("expense_data").appendChild()
         // expense_data_row.innerHTML = expense_list
     }
     xhr.send(addCSVData)
 }
-
-function handleCSVDataExpense(event){
-    event.preventDefault()
-    const expenseData = event.target
-    const addCSVExpenseData = new FormData(expenseData)
-    console.log(addCSVExpenseData)
-}
-
-
 
 const add_csv_expense_data = document.getElementById("add-expenses-with-csv")
 // add_csv_expense_data.addEventListener("submit", handleCSVDataExpense)
@@ -106,5 +181,3 @@ add_epense_form.addEventListener("submit", handleTripAddFormDidSubmit)
 
 const add_csv_expense = document.getElementById("load_csv_data")
 add_csv_expense.addEventListener("submit", handleLoadCSVFormDidSubmit)
-
-// load_trips(data_head)

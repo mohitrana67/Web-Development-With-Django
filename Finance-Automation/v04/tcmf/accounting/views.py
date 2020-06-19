@@ -20,7 +20,7 @@ def add_accounting_expense(request,*args,**kwargs):
     """
     The main task of this view is to create an API for storing accouting expenses in the database.
     """
-    data = {}
+    context = {}
     error_message = ""
     current_flag = "N"
 
@@ -94,13 +94,15 @@ def add_accounting_expense(request,*args,**kwargs):
         )
         # we are checking if data saved or not
         try:
-            expense.save()
+            # expense.save()
             error_message += "Expense saved"
         except:
             error_message += "Expense Not Saved"
+        
+        context['message'] = error_message
     # return HttpResponse(error_message)
     if request.is_ajax():
-            return JsonResponse(expense.serialize(), status=201) # 201 is for created items
+            return JsonResponse(context) # 201 is for created items
     # return render(
     #     request = request,
     #     template_name = "accounting/index.html",
@@ -210,7 +212,8 @@ def add_csv_data(request, *args, **kwargs):
                                 context["message"] = "Please contact administration, data didnt saved correctly."
                         else:
                             csv[i].pop(1)
-                            csv[i].pop(2)
+                            # csv[i].pop(2)
+                            # print(csv[i])
                             context["response"].append(csv[i])
         return JsonResponse(context)
         # new_value = csv[len(csv)-1][7] + 1.0

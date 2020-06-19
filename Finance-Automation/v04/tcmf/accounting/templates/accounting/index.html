@@ -69,24 +69,9 @@
     <div class="row" id="expense">
         <div class="col">
             <table class="table">
-                <thead>
-                  <tr id="expense_header_row">
-                    <th scope="col">expense_account_type</th>
-                    <th scope="col">expense_transaction_date</th>
-                    <th scope="col">expense_name</th>
-                    <th scope="col">expense_description_1</th>
-                    <th scope="col">expense_description_2</th>
-                    <th scope="col">expense_amount_cad</th>
-                    <th scope="col">expense_amount_usd</th>
-                    <th scope="col">expense_gst</th>
-                    <th scope="col">expense_pst</th>
-                    <th scope="col">expense_pvt</th>
-                  </tr>
-                </thead>
-                    <form action="1/add_csv_expense" method="POST" id="expense_data">
-                        {% csrf_token %}
-                        <input type="text" name="Mohit Rana">
-                    </form>
+                <tbody id="expense_data">
+
+                </tbody>
               </table>
         </div>
     </div>

@@ -178,3 +178,6 @@ add_epense_form.addEventListener("submit", handleTripAddFormDidSubmit)
 
 const add_csv_expense = document.getElementById("load_csv_data")
 add_csv_expense.addEventListener("submit", handleLoadCSVFormDidSubmit)
+
+
+// I have to check if the file being uploaded by the client is already there or not

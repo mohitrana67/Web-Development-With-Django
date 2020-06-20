@@ -5,7 +5,7 @@ Hello, Welcome to Trans Continental Motor Freight Inc.
 {% endblock %}
 
 {% block content %}
-<form action="create_user" method="post">
+<form action="create_user" method="post" id='create_user'>
     {% csrf_token %}
     <input type="text" name="username" placeholder="Please enter username">
     <input type="password" name="password" placeholder="Please enter password">

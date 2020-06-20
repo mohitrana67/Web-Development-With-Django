@@ -22,88 +22,101 @@ def add_accounting_expense(request,*args,**kwargs):
     """
     context = {}    #we are creating a context dictonary to send as a response to the request
     message = ""    #messages we will send
-    current_flag = "N"  #setting flag to see if all the values we are getting are correct
+    status = 0  #status to check if data is saved or not
 
-    # next_url = request.POST.get("next") or None
-    """
-    Getting all the values we are getting from the post request
-    """
-    expense_account_type = request.POST.get("expense_account_type")
-    expense_transaction_date = request.POST.get("expense_transaction_date")
-    expense_name = request.POST.get("expense_name")
-    expense_description_1 = request.POST.get("expense_description_1") or "There is no description"
-    expense_description_2 = request.POST.get("expense_description_2") or "There is no description"
-    expense_amount_cad = request.POST.get("expense_amount_cad") or 0
-    expense_amount_usd = request.POST.get("expense_amount_usd") or 0
-    expense_gst = request.POST.get("expense_gst") or 0
-    expense_pst = request.POST.get("expense_pst") or 0
-    expense_pvt = request.POST.get("expense_pvt") or 0
-
-    date = expense_transaction_date.split('-')
-    expense_year = int(float(date[0]))
-    expense_month = int(date[1])
-    
     """
     Now we will do all the validation on the data we received
         1.  First of all we will check for if we received either CAD amount or USD amout
         2.  Second, we will check if we received a float valud for all the numberic fields amount field
     """
-    if expense_amount_cad == 0 and expense_amount_usd == 0:
-        error_message += "Amount should be entered"
-    else:
-        if expense_amount_cad == 0:
-            try:
-                expense_amount_usd = float(expense_amount_usd)
-                current_flag = "Y"
-            except:
-                error_message += "You have to enter a numberical value for the Amounts"
-        else:
-            try:
-                expense_amount_cad = float(expense_amount_cad)
-                current_flag = "Y"
-            except:
-                error_message += "You have to enter a numberical value for the Amounts"
 
-    quarter1 = [1,2,3]
-    quarter2 = [4,5,6]
-    quarter3 = [7,8,9]
-    quarter4 = [10,11,12]
-    expense_quarter = 0
-    if expense_month in quarter1:
-        expense_quarter = 1
-    elif expense_month in quarter2:
-        expense_quarter = 2
-    elif expense_month in quarter3:
-        expense_quarter = 3
-    elif expense_month in quarter4:
-        expense_quarter = 4
-    """
-    Now we need to store the data we received from the form
-    """
-    if current_flag == "Y":
-        expense = Expense(
-            expense_account_type = expense_account_type,
-            expense_transaction_date = expense_transaction_date,
-            expense_name = expense_name,
-            expense_description_1 = expense_description_1,
-            expense_description_2 = expense_description_2,
-            expense_amount_cad = expense_amount_cad,
-            expense_amount_usd = expense_amount_usd,
-            expense_gst = expense_gst,
-            expense_pst = expense_pst,
-            expense_pvt = expense_pvt,
-            expense_quarter = expense_quarter,
-            expense_year = expense_year
-        )
-        # we are checking if data saved or not
-        try:
-            # expense.save()
-            error_message += "Expense saved"
-        except:
-            error_message += "Expense Not Saved"
-        
-        context['message'] = error_message
-    # return HttpResponse(error_message)
+    if not request.POST["expense_account_type"] or not request.POST["expense_transaction_date"] or not request.POST["expense_name"]:
+        message = "Please enter all the necessary values"
+        status = 401
+    else:
+        """
+        Getting all the values we are getting from the post request
+        """
+        expense_account_type = request.POST.get("expense_account_type")
+        expense_transaction_date = request.POST.get("expense_transaction_date")
+        expense_name = request.POST.get("expense_name")
+        expense_description_1 = request.POST.get("expense_description_1") or "There is no description"
+        expense_description_2 = request.POST.get("expense_description_2") or "There is no description"
+        expense_amount_cad = request.POST.get("expense_amount_cad") or 0
+        expense_amount_usd = request.POST.get("expense_amount_usd") or 0
+        expense_gst = request.POST.get("expense_gst") or 0
+        expense_pst = request.POST.get("expense_pst") or 0
+        expense_pvt = request.POST.get("expense_pvt") or 0
+
+        date = expense_transaction_date.split('-')
+        expense_year = int(float(date[0]))
+        expense_month = int(date[1])
+        current_flag = "N"  #setting flag to see if all the values we are getting are correct
+        if expense_amount_cad == 0 and expense_amount_usd == 0:
+            message = "Amount should be entered"
+            status = 401
+        else:
+            if expense_amount_cad == 0:
+                try:
+                    expense_amount_usd = float(expense_amount_usd)
+                    current_flag = "Y"
+                except:
+                    message = "You have to enter a numberical value for the Amounts"
+                    status = 401
+            else:
+                try:
+                    expense_amount_cad = float(expense_amount_cad)
+                    current_flag = "Y"
+                except:
+                    message = "You have to enter a numberical value for the Amounts"
+                    status = 401
+
+        quarter1 = [1,2,3]
+        quarter2 = [4,5,6]
+        quarter3 = [7,8,9]
+        quarter4 = [10,11,12]
+        expense_quarter = 0
+        if expense_month in quarter1:
+            expense_quarter = 1
+        elif expense_month in quarter2:
+            expense_quarter = 2
+        elif expense_month in quarter3:
+            expense_quarter = 3
+        elif expense_month in quarter4:
+            expense_quarter = 4
+        """
+        Now we need to store the data we received from the form
+        """
+        if current_flag == "Y":
+            expense = Expense(
+                expense_account_type = expense_account_type,
+                expense_transaction_date = expense_transaction_date,
+                expense_name = expense_name,
+                expense_description_1 = expense_description_1,
+                expense_description_2 = expense_description_2,
+                expense_amount_cad = expense_amount_cad,
+                expense_amount_usd = expense_amount_usd,
+                expense_gst = expense_gst,
+                expense_pst = expense_pst,
+                expense_pvt = expense_pvt,
+                expense_quarter = expense_quarter,
+                expense_year = expense_year
+            )
+            # we are checking if data saved or not
+            try:
+                # expense.save()
+                message = "Expense saved"
+                status = 200
+            except:
+                message = "Expense Not Saved"
+                status = 401
+        # return HttpResponse(error_message)
+    context = {
+        "message":message,
+        "status":status,
+    }
+
+    print(context)
     if request.is_ajax():
             return JsonResponse(context) # 201 is for created items
     # return render(

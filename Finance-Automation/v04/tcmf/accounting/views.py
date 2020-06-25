@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, Http404, JsonResponse
 
-from .forms import *
-from .classes import *
+from accounting.classes import ReadCSV
+from accounting.models import Expense
 
 # Create your views here.
 def home_view(request,*args,**kwargs):
@@ -14,6 +14,15 @@ def home_view(request,*args,**kwargs):
         status=None,
         using=None
     )
+
+# API to show list of all the expenses.
+def expenses_list(request,*args,**kwargs):
+    data = {}
+    expenses = Expense.objects.all()
+    expense_list = [x.serialize() for x in expenses]
+    data["response"] = expense_list
+
+    return JsonResponse(data,status=200)
 
 # API to store data in the accounting expense table in tcmf database.
 def add_accounting_expense(request,*args,**kwargs):
@@ -125,22 +134,18 @@ def add_accounting_expense(request,*args,**kwargs):
     #     context = {"message":error_message}
     # )
 
-# API to show list of all the expenses.
-def expenses_list(request,*args,**kwargs):
-    data = {}
-    expenses = Expense.objects.all()
-    expense_list = [x.serialize() for x in expenses]
-    data["response"] = expense_list
-
-    return JsonResponse(data,status=200)
-
 # API to load the csv and save data in database
 def add_csv_data(request, *args, **kwargs):
     context = {
         "message": "",
         "response": []   
     }
-    if request.method == 'POST' and request.FILES['uploadedFile']:  # We are cehcking if the request we are getting from the form is the POST request and the FILE field actually has something in it
+
+    if request.method != 'POST':
+        context["message"] = "You need to come to this page with a get request"
+    elif not request.FILES['uploadedFile']:
+        context["message"] = "You need to send a file here otherwise it will not work"
+    else:  # We are cehcking if the request we are getting from the form is the POST request and the FILE field actually has something in it
         uploadedFile = request.FILES['uploadedFile']    # We are getting all the varible from the uploded file
         uploadedFileName = request.FILES['uploadedFile'].name   # getting the name of the uploaded file to check whether the file uploaded is a csv file or not
         if not uploadedFileName.endswith('.csv'):   # checking if the file we received is a csv file and throw the error if the file received is not a csv file
@@ -149,6 +154,18 @@ def add_csv_data(request, *args, **kwargs):
             data_set = uploadedFile.read().decode('utf-8')  # read the csv file and decoding it with utf-8 format so that we can use it in the fuction we creatred in ReadCSV class
             read_csv = ReadCSV(data_set)    # calling the csv class to read csvs
             csv = read_csv.read_csv()   # getting the resultback from the read_csv funtion and assiging it to the variable csv. read_csv function is returning a list of all the csv elements with rows seperated by the array in the array [[row1],[row2],.....,[rowN]]
+
+            """Now we have the csv file we will perdform following preprocessing tasks on the file we received
+                1. We will check year and quarter of the csv file
+                2. We will check if for this quarter we already have data saved from the csv file(We have a limitation now that we have to upload the complete csv file at once at the end of the quarter). This could be accomplished by checking following matrix from the incoming file.
+                    2.1 First of all we have to check if we have already data for that year.
+                    2.2 Then we have to check if we have data already for that quarter
+                    2.3 Thirdly, we have to check if the data already in the database is from the csv file and was not saved manually.
+                    Now, if we have all the conditons met, we will show the data from that quarter to the user to update the fields and then save them
+                    If the conditions do not match then we can store the data in the database . 
+                3. We have to check if the file we received if from which bank(This feature we will implement later on when we will put this code into production)
+            """
+            # We will check if the data we wanna save is already in the database     
             quarter = 1
             full_date = csv[-1][2].split('/')    # converting the date into the database accepted date
             year = int(full_date[2])
@@ -158,7 +175,6 @@ def add_csv_data(request, *args, **kwargs):
                 docuemnt_type = 'Debit'
             else:
                 docuemnt_type = 'Credit'
-            
             if month in [1,2,3]:
                 quarter = 1
             elif month in [4,5,6]:
@@ -182,17 +198,12 @@ def add_csv_data(request, *args, **kwargs):
                         pass
                     type_of_cad = type(csv[i][6])
                     type_of_usd = type(csv[i][7]) 
+                    file_date = csv[i][2].split("/")    # converting the date into the database accepted date
+                    expense_transaction_date = file_date[2] + "-" + file_date[0] + "-" + file_date[1]
+                    csv[i][2] = expense_transaction_date
                     if type_of_cad != float:   # now for the USD amounts the CAD values will be balnk and converting them to float will return nuthing
-                        pass
-                    else:
-                        file_date = csv[i][2].split('/')    # converting the date into the database accepted date
-                        file_year = file_date[2]
-                        file_date = file_date[1]
-                        file_month = file_date[0]
-                        formatted_date = file_year+ '-' + file_month + '-' + file_date
-                        csv[i][2] = formatted_date
-                        if (csv[i][6] >= 0.0):
-                            expense_transaction_date= formatted_date
+                        # print(expense_transaction_date)
+                        if (csv[i][7] >= 0.0):
                             expense_account_type = csv[i][0]    
                             expense_name = 'Revenue'
                             expense_description_1 = csv[i][4]
@@ -228,13 +239,50 @@ def add_csv_data(request, *args, **kwargs):
                                 context["message"] = "Please contact administration, data didnt saved correctly."
                         else:
                             csv[i].pop(1)
-                            # csv[i].pop(2)
+                            csv[i].pop(2)
                             # print(csv[i])
                             context["response"].append(csv[i])
-        return JsonResponse(context)
+                    else:
+                        if (csv[i][6] >= 0.0):
+                            expense_account_type = csv[i][0]    
+                            expense_name = 'Revenue'
+                            expense_description_1 = csv[i][4]
+                            expense_description_2 = csv[i][5]
+                            expense_amount_cad = csv[i][6] or '0.0'
+                            expense_amount_usd = csv[i][7] or '0.0'
+                            try:
+                                expense_amount_usd = float(expense_amount_usd)
+                            except:
+                                pass
+                            try:
+                                expense_amount_cad = float(expense_amount_cad)
+                            except:
+                                pass
+
+                            expense = Expense(
+                                expense_account_type = expense_account_type,
+                                expense_transaction_date = expense_transaction_date,
+                                expense_name = expense_name,
+                                expense_description_1 = expense_description_1,
+                                expense_description_2 = expense_description_2,
+                                expense_amount_cad = expense_amount_cad,
+                                expense_amount_usd = expense_amount_usd,
+                                expense_quarter = quarter,
+                                expense_year = year,
+                                docuemnt_type = docuemnt_type
+                            )
+                            try:
+                                # expense.save()
+                                context["message"] = "Data saved Successfully"
+                                # return HttpResponse(csv)
+                            except:
+                                context["message"] = "Please contact administration, data didnt saved correctly."
+                        else:
+                            csv[i].pop(1)
+                            csv[i].pop(2)
+                            # print(csv[i])
+                            context["response"].append(csv[i])
         # new_value = csv[len(csv)-1][7] + 1.0
         # return HttpResponse(new_value)
         # return HttpResponse(csv[0][8])
-    else:
-        message = "File type is not csv"
-        # return HttpResponse("You are not rendering a post")
+    return JsonResponse(context)

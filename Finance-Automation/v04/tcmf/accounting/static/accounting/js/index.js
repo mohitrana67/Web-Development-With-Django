@@ -53,7 +53,7 @@ function handleTripAddFormDidSubmit(event){
     xhr.onload = function() {
         var serverResponse = xhr.response
         console.log(serverResponse.message)
-        addTripForm.style.display = "none"
+        // addTripForm.style.display = "none"
         // load_trips(data_head)
         // addTripForm.reset()
     }
@@ -81,6 +81,7 @@ function handleLoadCSVFormDidSubmit(event){
     const expense_data_row = document.getElementById("expense_data")
     xhr.onload = function() {
         var serverResponse = xhr.response
+        // console.log(serverResponse)
         var lenOfDataArray = (serverResponse.response).length
         var tbody = document.getElementById('expense_data')
         // NOw we have to iterate over the response to get all the rows of the response
@@ -89,7 +90,6 @@ function handleLoadCSVFormDidSubmit(event){
             var row = document.createElement('tr')
             row.className="tr"+i
             var csvExpenseForm = document.createElement('form')
-            csvExpenseForm.name = 'this is me'
             csvExpenseForm.setAttribute('onsubmit','handleTripAddFormDidSubmit(event)')
             csvExpenseForm.setAttribute('action','1/add_accouting_expense')
             csvExpenseForm.setAttribute('method', 'POST')
@@ -103,54 +103,67 @@ function handleLoadCSVFormDidSubmit(event){
             csrf_input.setAttribute('type', 'hidden')
 
             csvExpenseForm.appendChild(csrf_input)
-
             for(var j=0; j<11; j++){
                 // creating a table data for storing the input field
                 var tableData = document.createElement('td')
 
                 // creating the input for the table data
                 var inputField = document.createElement('input')
-                inputField.type = 'text'
                 if(j==0){
                     inputField.name = 'expense_account_type'
                     inputField.disabled = false
+                    inputField.type = 'text'
                     inputField.value = serverResponse.response[i][j]
                 }else if(j==1){
                     inputField.name = 'expense_transaction_date'
                     inputField.disabled = false
+                    inputField.type = 'text'
                     inputField.value = serverResponse.response[i][j]
                 }else if(j==2){
                     inputField.name = 'expense_name'
                     inputField.disabled = false
+                    inputField.type = 'text'
                     inputField.placeholder='Please enter expense type'
-                    inputField.value = serverResponse.response[i][j]
+                    // inputField.value = serverResponse.response[i][j]
                 }else if(j==3){
                     inputField.name = 'expense_description_1'
                     inputField.disabled = false
-                    inputField.value = serverResponse.response[i][j]
+                    inputField.type = 'text'
+                    inputField.value = serverResponse.response[i][j-1]
                 }else if(j==4){
                     inputField.name = 'expense_description_2'
                     inputField.disabled = false
-                    inputField.value = serverResponse.response[i][j]
+                    inputField.type = 'text'
+                    inputField.value = serverResponse.response[i][j-1]
                 }else if(j==5){
                     inputField.name = 'expense_amount_cad'
                     inputField.disabled = false
-                    inputField.value = serverResponse.response[i][j]
+                    inputField.type = 'number'
+                    inputField.step = "0.01"
+                    inputField.value = serverResponse.response[i][j-1]
                 }else if(j==6){
                     inputField.name = 'expense_amount_usd'
                     inputField.disabled = false
-                    inputField.value = serverResponse.response[i][j]
+                    inputField.type = 'number'
+                    inputField.step = "0.01"
+                    inputField.value = serverResponse.response[i][j-1]
                 }else if(j==7){
                     inputField.name = 'expense_gst'
                     inputField.placeholder = 'GST'
+                    inputField.type = 'number'
+                    inputField.step = "0.01"
                     inputField.disabled = false
                 }else if(j==8){
                     inputField.name = 'expense_pst'
                     inputField.placeholder = 'PST'
+                    inputField.type = 'number'
+                    inputField.step = "0.01"
                     inputField.disabled = false
                 }else if(j==9){
                     inputField.name = 'expense_pvt'
                     inputField.placeholder='PVT'
+                    inputField.type = 'number'
+                    inputField.step = "0.01"
                     inputField.disabled = false
                 }else{
                     inputField.type='submit'
@@ -169,6 +182,7 @@ function handleLoadCSVFormDidSubmit(event){
 
         // document.getElementById("expense_data").appendChild()
         // expense_data_row.innerHTML = expense_list
+        // console.log("you hit with error message" + serverResponse.message)
     }
     xhr.send(addCSVData)
 }

@@ -4,7 +4,7 @@ from django.db import models
 class Expense(models.Model):
     # id will be automatically genearted
     expense_account_type = models.CharField(max_length=100,blank=False, null=False)
-    expense_transaction_date = models.DateField(null=False, blank=False)
+    expense_transaction_date = models.DateField(null=False, blank=False) # format is yyyy-mm-dd
     expense_name = models.CharField(max_length=100,blank=False, null=False)
     expense_description_1 = models.CharField(max_length = 256, default='No Descriptiong Available')
     expense_description_2 = models.CharField(max_length = 256, default='No Descriptiong Available')
@@ -15,7 +15,7 @@ class Expense(models.Model):
     expense_pvt = models.IntegerField(default = 0)
     expense_quarter = models.IntegerField(default = 1)
     expense_year = models.IntegerField(default = 1000)
-    docuemnt_type = models.CharField(max_length=256, default="Expense is done by the driver")
+    docuemnt_type = models.CharField(max_length=256)
 
     def serialize(self):
         return {

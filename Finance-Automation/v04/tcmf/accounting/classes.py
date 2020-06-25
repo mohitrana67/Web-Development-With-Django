@@ -15,3 +15,4 @@ class ReadCSV():
             result.append(temp_arr)
         
         return result
+

@@ -21,6 +21,7 @@ def expenses_list(request,*args,**kwargs):
     expenses = Expense.objects.all()
     expense_list = [x.serialize() for x in expenses]
     data["response"] = expense_list
+    
 
     return JsonResponse(data,status=200)
 
@@ -56,7 +57,7 @@ def add_accounting_expense(request,*args,**kwargs):
         expense_gst = request.POST.get("expense_gst") or 0
         expense_pst = request.POST.get("expense_pst") or 0
         expense_pvt = request.POST.get("expense_pvt") or 0
-
+        # Will get the flag value to check if the data we are receiving is from driver expense of is it company expense
         date = expense_transaction_date.split('-')
         expense_year = int(float(date[0]))
         expense_month = int(date[1])
@@ -70,14 +71,14 @@ def add_accounting_expense(request,*args,**kwargs):
                     expense_amount_usd = float(expense_amount_usd)
                     current_flag = "Y"
                 except:
-                    message = "You have to enter a numberical value for the Amounts"
+                    message = "You have to enter a numerical value for the Amounts"
                     status = 401
             else:
                 try:
                     expense_amount_cad = float(expense_amount_cad)
                     current_flag = "Y"
                 except:
-                    message = "You have to enter a numberical value for the Amounts"
+                    message = "You have to enter a numerical value for the Amounts"
                     status = 401
 
         quarter1 = [1,2,3]

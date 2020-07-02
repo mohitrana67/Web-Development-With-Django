@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
-    'users.apps.UsersConfig',
     'dispatching.apps.DispatchingConfig',
     'accounting.apps.AccountingConfig',
     'django.contrib.admin',

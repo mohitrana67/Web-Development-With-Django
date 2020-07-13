@@ -133,4 +133,4 @@ dmypy.json
 finance-django/
 
 # ignoring testing code
-Testin/
+Testing/

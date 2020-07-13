@@ -129,5 +129,8 @@ dmypy.json
 .pyre/
 
 
-# ignoring viretual env
-finance-django
+# ignoring virtual env
+finance-django/
+
+# ignoring testing code
+Testin/

@@ -134,3 +134,4 @@ finance-django/
 
 # ignoring testing code
 Finance-Automation/Testing/
+Finance-Automation/finance/

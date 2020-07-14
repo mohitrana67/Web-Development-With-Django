@@ -287,3 +287,13 @@ def add_csv_data(request, *args, **kwargs):
         # return HttpResponse(new_value)
         # return HttpResponse(csv[0][8])
     return JsonResponse(context)
+
+def testing_react(request):
+    return render(
+        request = request,
+        template_name = 'accounting/reactindex.html',
+        context=None,
+        content_type=None,
+        status=None,
+        using=None
+    )

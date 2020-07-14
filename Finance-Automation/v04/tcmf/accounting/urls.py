@@ -11,6 +11,5 @@ urlpatterns = [
 
     path('<int:user_id>/add_csv_data', add_csv_data, name='add_csv_data'),
 
-    path('loadReact', loadReact, name="loadReact")
-
+    path('testing_react', testing_react, name='testin_react')
 ]

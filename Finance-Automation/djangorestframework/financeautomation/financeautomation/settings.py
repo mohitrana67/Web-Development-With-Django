@@ -12,35 +12,15 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
-import os
-import json
-from djago.core.exceptions import ImproperlyConfigureed
-
-with open(os.path.join(os.path.dirname(__file__),'secrets.json'),'r') as f:
-    secrets = json.loads(f.read())
-
-def get_secret(setting):
-    """Get the secret variable or return explicit exception"""
-    try:
-        return os.enviorn[setting]
-    except KeyError:
-        error_msg=f'Set the {setting} enviornment variables'
-        raise ImproperlyConfigureed(error_msg)
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-EXTERNAL_BASE = os.path.join(BASE_DIR, "externals")
-EXTERNAL_LIBS_PATH = os.path.join(EXTERNAL_BASE,"libs")
-EXTERNAL_APPS_PATH = os.path.join(EXTERNAL_BASE,"apps")
-sys.path = ["",EXTERNAL_LIBS_PATH,EXTERNAL_APPS_PATH]+sys.path
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = '$(&7uo5#8ox=csuq*qpj1!xub^=+l4_t&iaf02h!azt$*o2l2i'
-SECRET_KEY = get_secret('DJANGO_SECRET_KEY')
+SECRET_KEY = '%s%n1kyp@^8xj=rmp=*kge#!gm(v)%r^_n2sp3!xy^0pfc2q!+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -51,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'expenses',
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -74,9 +57,7 @@ ROOT_URLCONF = 'financeautomation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR,'financeautomation','templates')
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,17 +70,6 @@ TEMPLATES = [
     },
 ]
 
-LOCALE_PATHS = [
-    os.path.join(BASE_DIR,'locale')
-]
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'financeautomation','site_static')
-]
-
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-
 WSGI_APPLICATION = 'financeautomation.wsgi.application'
 
 
@@ -109,11 +79,11 @@ WSGI_APPLICATION = 'financeautomation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_secret('tcmf'),
-        'USER': get_secret('mohitrana'),
+        'NAME': 'financeapi',
+        'USER': 'mohitrana',
         'PASSWORD': '',
-        'HOST': get_secret('localhost'),
-        'PORT': get_secret('5432'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -136,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

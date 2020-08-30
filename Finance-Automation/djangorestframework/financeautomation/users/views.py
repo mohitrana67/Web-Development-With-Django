@@ -35,3 +35,4 @@ def register(request):
 #         return HttpResponse(f"{email}, {username}, {fname}, {lname}, {age}")
 #     elif request.method == 'GET':
 #         return render(request, 'users/register.html')
+

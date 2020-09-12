@@ -1,1 +1,0 @@
-This is where we will explain all of our project.

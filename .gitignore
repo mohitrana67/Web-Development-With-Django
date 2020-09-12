@@ -130,8 +130,7 @@ dmypy.json
 
 
 # ignoring virtual env
-finance-django/
+ve/
 
 # ignoring testing code
-Finance-Automation/Testing/
-Finance-Automation/finance/
+

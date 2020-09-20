@@ -2,9 +2,11 @@
 // var ReactDOM = require("react-dom")
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App.jsx"
+import Header from "./components/Header/Header.jsx"
 
 ReactDOM.render(
-    <App />
+    <div>
+        <Header />
+    </div>
     , document.getElementById("root")
 )

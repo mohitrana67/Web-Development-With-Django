@@ -1,0 +1,32 @@
+.Authentication{
+    width: 500px;
+}
+
+/* Just to change the color of the placeholder */
+::-webkit-input-placeholder {
+    text-align: center;
+ }
+ 
+ :-moz-placeholder { /* Firefox 18- */
+    text-align: center;  
+ }
+ 
+ ::-moz-placeholder {  /* Firefox 19+ */
+    text-align: center;  
+ }
+ 
+ :-ms-input-placeholder {  
+    text-align: center;
+ }
+
+ input{
+    text-align: center;
+ }
+
+ .Authentication{
+   display: block;
+   margin-top: 10%;
+   width: 30%;
+   border: 3px solid green;
+   padding: 10px;
+ }
